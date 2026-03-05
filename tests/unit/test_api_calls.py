@@ -16,6 +16,8 @@ from unittest.mock import patch
 
 import pytest
 
+from tests.helpers import get_stop_hook_path, get_project_root
+
 
 @pytest.mark.unit
 class TestApiCallFunction:
@@ -91,7 +93,7 @@ class TestApiCallErrorHandling:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         source = result.stdout
@@ -111,7 +113,7 @@ class TestApiCallErrorHandling:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         # PATCH uses same structure as POST with -X PATCH
@@ -129,7 +131,7 @@ class TestApiCallErrorHandling:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         source = result.stdout
@@ -248,7 +250,7 @@ class TestCleanupPendingTurn:
 
     def test_cleanup_is_set_as_trap(self):
         """Test that cleanup_pending_turn is set as EXIT trap"""
-        with open("/Users/tanushreesharma/tracing-claude-code/stop_hook.sh", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should have trap set for cleanup
@@ -268,14 +270,14 @@ class TestApiKeyHandling:
 
     def test_api_key_from_cc_langsmith_api_key(self):
         """Test that CC_LANGSMITH_API_KEY is checked first"""
-        with open("/Users/tanushreesharma/tracing-claude-code/stop_hook.sh", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "CC_LANGSMITH_API_KEY" in content
 
     def test_api_key_fallback_to_langsmith_api_key(self):
         """Test fallback to LANGSMITH_API_KEY"""
-        with open("/Users/tanushreesharma/tracing-claude-code/stop_hook.sh", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should have fallback syntax
@@ -283,7 +285,7 @@ class TestApiKeyHandling:
 
     def test_api_key_validation(self):
         """Test that missing API key is handled"""
-        with open("/Users/tanushreesharma/tracing-claude-code/stop_hook.sh", "r") as f:
+        with open("get_stop_hook_path()", "r") as f:
             content = f.read()
 
         # Should check if API_KEY is empty
@@ -306,7 +308,7 @@ class TestHttpResponseHandling:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         source = result.stdout
@@ -326,7 +328,7 @@ class TestHttpResponseHandling:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         source = result.stdout
@@ -346,7 +348,7 @@ class TestHttpResponseHandling:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         source = result.stdout
@@ -365,7 +367,7 @@ class TestHttpResponseHandling:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         source = result.stdout
@@ -381,14 +383,14 @@ class TestProjectConfiguration:
 
     def test_project_name_from_env(self):
         """Test that project name comes from CC_LANGSMITH_PROJECT"""
-        with open("/Users/tanushreesharma/tracing-claude-code/stop_hook.sh", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "CC_LANGSMITH_PROJECT" in content
 
     def test_project_name_default(self):
         """Test that project has default value"""
-        with open("/Users/tanushreesharma/tracing-claude-code/stop_hook.sh", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should have default: "claude-code"
@@ -396,7 +398,93 @@ class TestProjectConfiguration:
 
     def test_api_base_url(self):
         """Test that API base URL is configured"""
-        with open("/Users/tanushreesharma/tracing-claude-code/stop_hook.sh", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "api.smith.langchain.com" in content
+
+
+@pytest.mark.unit
+class TestEndpointConfiguration:
+    """Tests for API endpoint configuration"""
+
+    def test_default_endpoint_value(self):
+        """Test that API_BASE evaluates to default when CC_LANGSMITH_ENDPOINT is not set"""
+        script = f"""
+        cd {get_project_root()}
+        unset CC_LANGSMITH_ENDPOINT
+        eval "$(grep '^API_BASE=' stop_hook.sh)"
+        echo "$API_BASE"
+        """
+
+        result = subprocess.run(
+            ["bash", "-c", script],
+            capture_output=True,
+            text=True
+        )
+
+        assert result.returncode == 0
+        assert result.stdout.strip() == "https://api.smith.langchain.com"
+
+    def test_endpoint_override_value(self):
+        """Test that API_BASE evaluates to CC_LANGSMITH_ENDPOINT when set"""
+        custom_endpoint = "https://eu.api.smith.langchain.com"
+        
+        script = f"""
+        cd {get_project_root()}
+        export CC_LANGSMITH_ENDPOINT="{custom_endpoint}"
+        eval "$(grep '^API_BASE=' stop_hook.sh)"
+        echo "$API_BASE"
+        """
+
+        result = subprocess.run(
+            ["bash", "-c", script],
+            capture_output=True,
+            text=True
+        )
+
+        assert result.returncode == 0
+        assert result.stdout.strip() == custom_endpoint
+
+    def test_empty_endpoint_uses_default_value(self):
+        """Test that empty CC_LANGSMITH_ENDPOINT falls back to default"""
+        script = f"""
+        cd {get_project_root()}
+        export CC_LANGSMITH_ENDPOINT=""
+        eval "$(grep '^API_BASE=' stop_hook.sh)"
+        echo "$API_BASE"
+        """
+
+        result = subprocess.run(
+            ["bash", "-c", script],
+            capture_output=True,
+            text=True
+        )
+
+        assert result.returncode == 0
+        assert result.stdout.strip() == "https://api.smith.langchain.com"
+
+    def test_multiple_endpoint_values(self):
+        """Test that API_BASE correctly evaluates different endpoint values"""
+        test_cases = [
+            "https://us.api.smith.langchain.com",
+            "https://asia.api.smith.langchain.com",
+            "http://localhost:8000",
+        ]
+
+        for endpoint in test_cases:
+            script = f"""
+            cd {get_project_root()}
+            export CC_LANGSMITH_ENDPOINT="{endpoint}"
+            eval "$(grep '^API_BASE=' stop_hook.sh)"
+            echo "$API_BASE"
+            """
+
+            result = subprocess.run(
+                ["bash", "-c", script],
+                capture_output=True,
+                text=True
+            )
+
+            assert result.returncode == 0
+            assert result.stdout.strip() == endpoint

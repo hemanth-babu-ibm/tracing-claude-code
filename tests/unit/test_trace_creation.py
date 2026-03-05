@@ -18,6 +18,8 @@ from datetime import datetime
 
 import pytest
 
+from tests.helpers import get_project_root
+
 
 @pytest.mark.unit
 class TestCreateTraceFunction:
@@ -251,7 +253,7 @@ class TestFindToolResultWithTimestamp:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = json.loads(result.stdout.strip())
@@ -286,7 +288,7 @@ class TestFindToolResultWithTimestamp:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = json.loads(result.stdout.strip())
@@ -323,7 +325,7 @@ class TestFindToolResultWithTimestamp:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = json.loads(result.stdout.strip())

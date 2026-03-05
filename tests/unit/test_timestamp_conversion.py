@@ -13,6 +13,8 @@ import subprocess
 import pytest
 from datetime import datetime
 
+from tests.helpers import get_project_root
+
 
 @pytest.mark.unit
 class TestISOToDottedOrderConversion:
@@ -162,7 +164,7 @@ class TestDottedOrderTimestampFormat:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = result.stdout.strip()

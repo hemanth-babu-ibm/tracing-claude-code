@@ -2,7 +2,9 @@
 Pytest configuration and shared fixtures for stop_hook.sh tests.
 """
 
+import os
 import uuid
+from pathlib import Path
 
 import pytest
 
@@ -63,7 +65,10 @@ def bash_executor():
     Returns:
         BashRunner instance
     """
-    return BashRunner("/Users/tanushreesharma/tracing-claude-code/stop_hook.sh")
+    # Get the project root directory (parent of tests directory)
+    project_root = Path(__file__).parent.parent
+    stop_hook_path = project_root / "stop_hook.sh"
+    return BashRunner(str(stop_hook_path))
 
 
 @pytest.fixture

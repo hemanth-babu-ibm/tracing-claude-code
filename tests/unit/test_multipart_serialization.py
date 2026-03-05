@@ -15,6 +15,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.helpers import get_project_root
+
 
 @pytest.mark.unit
 class TestSerializeForMultipart:
@@ -188,7 +190,7 @@ class TestSerializeForMultipartIntegration:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         # Check output contains -F arguments
@@ -226,7 +228,7 @@ class TestSerializeForMultipartIntegration:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = result.stdout
@@ -260,7 +262,7 @@ class TestSerializeForMultipartIntegration:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         # Main file should exist
@@ -296,7 +298,7 @@ class TestSerializeForMultipartIntegration:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         # Read main file and verify it doesn't have inputs/outputs
@@ -332,7 +334,7 @@ class TestSerializeForMultipartIntegration:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = result.stdout
@@ -380,7 +382,7 @@ class TestMultipartCurlFormat:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = result.stdout
@@ -411,7 +413,7 @@ class TestMultipartCurlFormat:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = result.stdout
@@ -441,7 +443,7 @@ class TestMultipartCurlFormat:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = result.stdout
@@ -471,7 +473,7 @@ class TestMultipartCurlFormat:
             ["bash", "-c", script],
             capture_output=True,
             text=True,
-            cwd="/Users/tanushreesharma/tracing-claude-code"
+            cwd=str(get_project_root())
         )
 
         output = result.stdout

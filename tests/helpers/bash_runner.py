@@ -10,11 +10,15 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
+from tests.helpers import get_stop_hook_path
+
 
 class BashRunner:
     """Execute bash functions from stop_hook.sh in isolation"""
 
     def __init__(self, script_path: str = "/Users/tanushreesharma/tracing-claude-code/stop_hook.sh"):
+        if script_path is None:
+            script_path = str(get_stop_hook_path())
         self.script_path = script_path
         if not Path(script_path).exists():
             raise FileNotFoundError(f"Script not found: {script_path}")
