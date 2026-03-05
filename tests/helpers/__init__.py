@@ -24,4 +24,4 @@ def get_stop_hook_path():
     """
     return get_project_root() / "stop_hook.sh"
 
-# Made with Bob
+
