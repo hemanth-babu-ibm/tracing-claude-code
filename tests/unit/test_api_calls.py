@@ -285,7 +285,7 @@ class TestApiKeyHandling:
 
     def test_api_key_validation(self):
         """Test that missing API key is handled"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should check if API_KEY is empty

@@ -140,7 +140,7 @@ class TestTurnGrouping:
 
     def test_tracks_current_assistants_array(self):
         """Test that current assistant messages are tracked as array"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "current_assistants" in content
@@ -171,7 +171,7 @@ class TestTurnGrouping:
 
     def test_new_user_starts_new_turn(self):
         """Test that new user message starts a new turn"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # When user message is found (not tool result), should start new turn
@@ -188,7 +188,7 @@ class TestTurnGrouping:
 
     def test_creates_trace_when_turn_complete(self):
         """Test that create_trace is called when turn is complete"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "create_trace" in content
@@ -200,21 +200,21 @@ class TestSSEStreamingMerge:
 
     def test_tracks_current_msg_id(self):
         """Test that current message ID is tracked for SSE parts"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "current_msg_id" in content
 
     def test_tracks_current_assistant_parts(self):
         """Test that assistant parts are tracked for merging"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "current_assistant_parts" in content
 
     def test_same_msg_id_adds_to_parts(self):
         """Test that same message ID adds to current parts"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should compare msg_id to current_msg_id
@@ -222,7 +222,7 @@ class TestSSEStreamingMerge:
 
     def test_different_msg_id_starts_new_message(self):
         """Test that different message ID starts a new message"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should set current_msg_id to new msg_id
@@ -265,14 +265,14 @@ class TestStateUpdates:
 
     def test_updates_timestamp_in_state(self):
         """Test that updated timestamp is set in state"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "updated" in content
 
     def test_state_is_session_specific(self):
         """Test that state is keyed by session_id"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should use session_id as key
@@ -285,14 +285,14 @@ class TestExecutionTimeTracking:
 
     def test_tracks_script_start_time(self):
         """Test that script start time is recorded"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "script_start" in content
 
     def test_tracks_script_end_time(self):
         """Test that script end time is recorded"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "script_end" in content
@@ -329,14 +329,14 @@ class TestTracingDisabledCheck:
 
     def test_checks_trace_to_langsmith_env(self):
         """Test that TRACE_TO_LANGSMITH is checked"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "TRACE_TO_LANGSMITH" in content
 
     def test_case_insensitive_check(self):
         """Test that check is case insensitive"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should use tr to lowercase
@@ -344,7 +344,7 @@ class TestTracingDisabledCheck:
 
     def test_exits_early_when_disabled(self):
         """Test that script exits when tracing disabled"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should have early exit
@@ -358,7 +358,7 @@ class TestRequiredCommandChecks:
 
     def test_checks_jq_available(self):
         """Test that jq availability is checked"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "jq" in content
@@ -366,21 +366,21 @@ class TestRequiredCommandChecks:
 
     def test_checks_curl_available(self):
         """Test that curl availability is checked"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "curl" in content
 
     def test_checks_uuidgen_available(self):
         """Test that uuidgen availability is checked"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "uuidgen" in content
 
     def test_exits_gracefully_if_command_missing(self):
         """Test that script exits gracefully if required command missing"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should exit 0 (not error) if command missing
@@ -393,7 +393,7 @@ class TestFinalTurnProcessing:
 
     def test_processes_pending_assistant_parts(self):
         """Test that pending assistant parts are merged at end"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should check for pending parts after loop
@@ -402,7 +402,7 @@ class TestFinalTurnProcessing:
 
     def test_processes_final_turn(self):
         """Test that final turn is processed after loop"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         # Should have processing after the while loop
@@ -417,28 +417,28 @@ class TestLoggingInMain:
 
     def test_logs_session_start(self):
         """Test that session processing start is logged"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "Processing session" in content
 
     def test_logs_message_count(self):
         """Test that new message count is logged"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "new messages" in content
 
     def test_logs_turns_processed(self):
         """Test that turns processed count is logged"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "turns" in content
 
     def test_logs_invalid_input_warning(self):
         """Test that invalid input is logged as warning"""
-        with open("get_stop_hook_path()", "r") as f:
+        with open(get_stop_hook_path(), "r") as f:
             content = f.read()
 
         assert "WARN" in content
